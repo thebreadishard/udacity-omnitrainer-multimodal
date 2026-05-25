@@ -166,12 +166,13 @@ async def main():
         wait=tenacity.wait_full_jitter(multiplier=0.5, max=15),
     )
 
-    # Run all evaluations
-
-    # TODO: call await text_dataset.evaluate() with the appropriate parameters to enable retries
-    # HINT: you need to pass run_text_moderation as the function to test,
-    # and both retry_task and retry_evaluators should be set to retry_config
-    report = ...  # TODO
+    # Run all evaluations, retrying both the task and the evaluator calls
+    # to ride out transient API failures.
+    report = await text_dataset.evaluate(
+        run_text_moderation,
+        retry_task=retry_config,
+        retry_evaluators=retry_config,
+    )
 
     # Print results
     report.print(include_input=True, include_output=True, include_durations=False)
