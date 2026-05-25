@@ -166,9 +166,8 @@ def check_content_safety(*, text: str | None = None, media: str | None = None) -
         Tuple of (is_safe, feedback_message, mime_type)
     """
     # Create a tracing span for this moderation check
-    # TODO: use the tracer to create a span named "moderate_text"
-    # HINT: use tracer.start_as_current_span with the name of the span as argument
-    with ... as span:
+    # The span is renamed below once we know the content type.
+    with tracer.start_as_current_span("moderate_text") as span:
 
         # Route to the appropriate moderation function
         if text is not None:
