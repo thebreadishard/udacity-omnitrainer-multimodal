@@ -206,13 +206,13 @@ class ChatSessionWithTracing:
 
     def __init__(self):
         self.session_id = str(uuid.uuid4())
-        # Create a root span for the entire conversation
-        # TODO: use the tracer to create a span named "conversation" and set an attribute "session.id" with the session_id
-        # HINT: use tracer.start_span with the name of the span as argument, and set
-        #       an attribute "session.id" with the session_id by using attributes={"session.id": self.session_id}
-        # NOTE: this is start_span, NOT start_as_current_span because we want to keep this span open across multiple chat turns
-        #      and only close it when the conversation ends.
-        self.conversation_span = ... # Replace with your span
+        # Create a root span for the entire conversation.
+        # We use start_span (not start_as_current_span) because this span stays
+        # open across multiple chat turns and is closed when the conversation ends.
+        self.conversation_span = tracer.start_span(
+            "conversation",
+            attributes={"session.id": self.session_id},
+        )
 
     async def chat_with_gemini(self, message: dict, history: List, past_messages: List) -> Tuple[str, List, str]:
         """
@@ -233,15 +233,12 @@ class ChatSessionWithTracing:
         Returns:
             Tuple of (response_text, updated_messages, feedback_text)
         """
-        # Create a tracing span for this chat turn
-
-        # TODO: use the tracer to create a span named "chat_turn"
-        # HINT: use tracer.start_as_current_span with the name of the span as argument, and
-        #       set the context to the conversation_span using:
-        #           context=trace.set_span_in_context(self.conversation_span)
-        #       so that this span is a child of the conversation span. Feel free to add
-        #       attributes to the span as needed.
-        with ... as span:
+        # Create a tracing span for this chat turn, nested under the
+        # long-lived conversation span so all turns are grouped together.
+        with tracer.start_as_current_span(
+            "chat_turn",
+            context=trace.set_span_in_context(self.conversation_span),
+        ) as span:
             
             logger.info(f"New turn - Text: '{message.get('text', '')[:50]}...', Files: {len(message.get('files', []))}")
 
@@ -267,9 +264,8 @@ class ChatSessionWithTracing:
                         feedback = f"⚠️ Content flagged: {safety_message}"
                         response = "[This content was flagged by moderation and not sent to the AI. Please try again.]"
 
-                        # TODO: set an attribute "feedback" in the tracing span with the feedback message
-                        # HINT: use span.set_attribute with "feedback" as the key and feedback as the value
-                        ...
+                        # Record the feedback on the span for observability
+                        span.set_attribute("feedback", feedback)
 
                         return response, past_messages, feedback
 
@@ -299,9 +295,8 @@ class ChatSessionWithTracing:
                             with open(file_path, "rb") as f:
                                 file_bytes = f.read()
                             
-                            # TODO: create a BinaryContent object with data=file_bytes and media_type=mime_type
-                            # and append it to prompt_parts so it's included in the prompt to the AI
-                            ...
+                            # Wrap the file bytes so Pydantic AI / Gemini can consume them
+                            prompt_parts.append(BinaryContent(data=file_bytes, media_type=mime_type))
 
                         except ValueError as e:
                             raise gr.Error(str(e))
@@ -313,12 +308,9 @@ class ChatSessionWithTracing:
             try:
                 with tracer.start_as_current_span("llm_customer"):
 
-                    # GEMINI CALL: Send prompt to AI agent that plays the customer role
-                    # TODO: use await customer_agent.run to get the result
-                    # HINT: pass the prompt_parts as the first argument, and do not forget to
-                    #       pass the past_messages as the message_history otherwise the agent
-                    #       will lose context of the conversation across turns.
-                    # NOTE: this is await customer_agent.run since this is an async function.
+                    # GEMINI CALL: Send prompt to the AI agent that plays the customer role.
+                    # past_messages is forwarded as message_history so the agent keeps
+                    # context across turns.
                     result = await customer_agent.run(
                         prompt_parts,
                         message_history=past_messages,
