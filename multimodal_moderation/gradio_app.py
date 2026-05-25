@@ -376,15 +376,14 @@ def create_chat_interface() -> gr.Blocks:
         with gr.Row():
             # Left column: Chat interface (75% width)
             with gr.Column(scale=3):
-                # TODO: fill the missing arguments to gr.ChatInterface
                 gr.ChatInterface(
-                    fn=..., # This is the function called at each turn, and should be chat_session.chat_with_gemini
+                    fn=chat_session.chat_with_gemini,
                     type="messages",  # Use newer messages format (supports multimodal)
-                    multimodal=...,  # Enable file uploads by setting this to True
+                    multimodal=True,  # Enable file uploads
                     editable=False,  # Don't allow editing past messages
                     textbox=gr.MultimodalTextbox(
                         file_count="multiple",  # Allow multiple files
-                        file_types=...,  # Set this to a list of allowed file types ("image", "video", "audio")
+                        file_types=["image", "video", "audio"],
                         sources=["upload", "microphone"],  # Allow file upload and recording
                         placeholder="Type a message, upload files, or record audio...",
                     ),
@@ -394,11 +393,12 @@ def create_chat_interface() -> gr.Blocks:
                         placeholder="👋 Start by greeting the customer or introducing yourself. The AI customer will respond with their complaint.",
                         height="75vh",
                     ),
-                    # TODO: in order to use pydantic AI with Gradio, we need to pass the past_messages_state
-                    # as additional_inputs and additional_outputs. Additional outputs should also include feedback_display
-                    # so the second value returned by our function is directly passed in to feedback_display.
-                    additional_inputs=...,  # This should be a list containing past_messages_state
-                    additional_outputs=...,  # This should be a list containing past_messages_state and feedback_display
+                    # Pydantic AI's message history is threaded through Gradio via
+                    # additional_inputs/outputs so the agent keeps context across turns.
+                    # The order of additional_outputs must match the tuple returned by
+                    # chat_with_gemini: (response, updated_messages, feedback).
+                    additional_inputs=[past_messages_state],
+                    additional_outputs=[past_messages_state, feedback_display],
                 )
 
             # Right column: Feedback and guidelines (25% width)
