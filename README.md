@@ -22,6 +22,8 @@ Architecture:
 6. A convenience executable that starts the 3 services: the backend (fastAPI APIs), the frontend (the gradio app) as well as 
    Arize Phoenix for tracing.
 
+> **Note on test data:** this public version of the project does **not** include the `tests/test_data/` and `evals/test_data/` fixture folders that ship with the original Udacity starter kit. The tests and eval scripts reference files in those folders, so they will not run as-is against this repo — you'll need to drop in your own sample text, image, audio, and video files (matching the filenames referenced in `tests/` and `evals/`) to reproduce the test and eval runs.
+
 ## How to work on the project
 
 The scaffolding is provided to you. You will complete key parts of the code, applying what you have learned, following a precise sequence of steps described below.
@@ -154,7 +156,7 @@ default project, and see your traces and spans. Explore the different metadata a
 
 ## See your backend APIs
 
-Go to `http://0.0.0.0:8000/docs` to see a nice documentation of your moderation APIs. If you wanna test them out from here, click on Authorize on the upper right and insert your USER_API_KEY (the one you have set in your .env file). Then click on an endpoint (say, `/api/v1/moderate-text`) and click on Try it out (in the upper right). You will see a JSON like:
+Go to `http://localhost:8000/docs` to see a nice documentation of your moderation APIs. If you wanna test them out from here, click on Authorize on the upper right and insert your USER_API_KEY (the one you have set in your .env file). Then click on an endpoint (say, `/api/v1/moderate-text`) and click on Try it out (in the upper right). You will see a JSON like:
 ```json
 {
   "text": "string"
