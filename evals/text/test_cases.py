@@ -140,11 +140,9 @@ cases: List[Case[List[TextInput], TextModerationResult, Any]] = [
 # create_repeated_cases() repeats each case EVAL_NUM_REPEATS times to measure consistency
 text_dataset = Dataset[List[TextInput], TextModerationResult, Any](\
 
-    # TODO: use the create_repeated_cases function to create the dataset with the test cases defined above
-    # repeated EVAL_NUM_REPEATS times (as defined in .env). This helps measure consistency of the model under test
-    # and reduces the variance of the measurements.
-    # HINT: you need to pass cases as the argument to create_repeated_cases
-    cases=...,
+    # Repeat each case EVAL_NUM_REPEATS times to measure model consistency
+    # and reduce variance in the reported metrics.
+    cases=create_repeated_cases(cases),
     evaluators=[
         # Global evaluators that apply to all test cases
         IsInstance(type_name="TextModerationResult"),  # Check correct return type
