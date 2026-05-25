@@ -105,10 +105,12 @@ evals/results/
 *.eval.json
 
 # ---------------------------------------------------------------------------
-# Provided test fixtures (not redistributed in public repo)
+# Provided test fixtures (not redistributed in public repo).
+# Exceptions: fixtures we authored ourselves for stand-out features.
 # ---------------------------------------------------------------------------
 tests/test_data/
-evals/test_data/
+evals/test_data/*
+!evals/test_data/spam_text.txt
 
 # ---------------------------------------------------------------------------
 # Logs / temp

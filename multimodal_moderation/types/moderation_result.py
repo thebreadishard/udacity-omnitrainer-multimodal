@@ -12,6 +12,12 @@ class TextModerationResult(ModerationResult):
     contains_pii: bool = Field(description="Whether the message contains any personally-identifiable information (PII)")
     is_unfriendly: bool = Field(description="Whether unfriendly tone or content was detected")
     is_unprofessional: bool = Field(description="Whether unprofessional tone or content was detected")
+    is_spam: bool = Field(
+        description=(
+            "Whether the message is spam: unsolicited promotional content, repeated/boilerplate "
+            "advertising, suspicious links, or off-topic mass-marketing language."
+        )
+    )
 
 
 class ImageModerationResult(ModerationResult):
@@ -40,3 +46,9 @@ class AudioModerationResult(ModerationResult):
     )
     is_unfriendly: bool = Field(description="Whether unfriendly tone or content was detected")
     is_unprofessional: bool = Field(description="Whether unprofessional tone or content was detected")
+    is_spam: bool = Field(
+        description=(
+            "Whether the transcribed audio is spam: unsolicited promotional content, repeated/boilerplate "
+            "advertising, suspicious offers, or off-topic mass-marketing language."
+        )
+    )

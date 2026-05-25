@@ -52,7 +52,7 @@ MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 MODERATION_CONFIG = {
     "text": {
         "endpoint": f"{API_BASE_URL}/api/v1/moderate_text",
-        "unsafe_flags": ["is_unfriendly", "is_unprofessional", "contains_pii"],
+        "unsafe_flags": ["is_unfriendly", "is_unprofessional", "contains_pii", "is_spam"],
     },
     "image": {
         "endpoint": f"{API_BASE_URL}/api/v1/moderate_image_file",
@@ -64,7 +64,7 @@ MODERATION_CONFIG = {
     },
     "audio": {
         "endpoint": f"{API_BASE_URL}/api/v1/moderate_audio_file",
-        "unsafe_flags": ["is_unfriendly", "is_unprofessional", "contains_pii"],
+        "unsafe_flags": ["is_unfriendly", "is_unprofessional", "contains_pii", "is_spam"],
     },
 }
 

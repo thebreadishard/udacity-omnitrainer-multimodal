@@ -49,12 +49,14 @@ class TestTextModerationResult:
             contains_pii=True,
             is_unfriendly=False,
             is_unprofessional=True,
+            is_spam=False,
         )
 
         assert hasattr(result, "rationale"), "TextModerationResult should have 'rationale' field"
         assert hasattr(result, "contains_pii"), "TextModerationResult should have 'contains_pii' field"
         assert hasattr(result, "is_unfriendly"), "TextModerationResult should have 'is_unfriendly' field"
         assert hasattr(result, "is_unprofessional"), "TextModerationResult should have 'is_unprofessional' field"
+        assert hasattr(result, "is_spam"), "TextModerationResult should have 'is_spam' field"
 
     def test_field_types(self):
         """Verify all fields have correct types"""
@@ -63,12 +65,14 @@ class TestTextModerationResult:
             contains_pii=True,
             is_unfriendly=False,
             is_unprofessional=True,
+            is_spam=False,
         )
 
         assert isinstance(result.rationale, str), "rationale should be a string"
         assert isinstance(result.contains_pii, bool), "contains_pii should be a boolean"
         assert isinstance(result.is_unfriendly, bool), "is_unfriendly should be a boolean"
         assert isinstance(result.is_unprofessional, bool), "is_unprofessional should be a boolean"
+        assert isinstance(result.is_spam, bool), "is_spam should be a boolean"
 
     def test_inherits_from_moderation_result(self):
         """Verify TextModerationResult inherits from ModerationResult"""
@@ -77,7 +81,7 @@ class TestTextModerationResult:
 
     def test_all_fields_are_required(self):
         """Verify all fields are required"""
-        with pytest.raises(ValidationError, match="contains_pii|is_unfriendly|is_unprofessional"):
+        with pytest.raises(ValidationError, match="contains_pii|is_unfriendly|is_unprofessional|is_spam"):
             TextModerationResult(rationale="Test")
 
 
@@ -176,6 +180,7 @@ class TestAudioModerationResult:
             contains_pii=True,
             is_unfriendly=False,
             is_unprofessional=True,
+            is_spam=False,
         )
 
         assert hasattr(result, "rationale"), "AudioModerationResult should have 'rationale' field"
@@ -183,6 +188,7 @@ class TestAudioModerationResult:
         assert hasattr(result, "contains_pii"), "AudioModerationResult should have 'contains_pii' field"
         assert hasattr(result, "is_unfriendly"), "AudioModerationResult should have 'is_unfriendly' field"
         assert hasattr(result, "is_unprofessional"), "AudioModerationResult should have 'is_unprofessional' field"
+        assert hasattr(result, "is_spam"), "AudioModerationResult should have 'is_spam' field"
 
     def test_field_types(self):
         """Verify all fields have correct types"""
@@ -192,6 +198,7 @@ class TestAudioModerationResult:
             contains_pii=True,
             is_unfriendly=False,
             is_unprofessional=True,
+            is_spam=False,
         )
 
         assert isinstance(result.rationale, str), "rationale should be a string"
@@ -199,6 +206,7 @@ class TestAudioModerationResult:
         assert isinstance(result.contains_pii, bool), "contains_pii should be a boolean"
         assert isinstance(result.is_unfriendly, bool), "is_unfriendly should be a boolean"
         assert isinstance(result.is_unprofessional, bool), "is_unprofessional should be a boolean"
+        assert isinstance(result.is_spam, bool), "is_spam should be a boolean"
 
     def test_inherits_from_moderation_result(self):
         """Verify AudioModerationResult inherits from ModerationResult"""
@@ -207,5 +215,5 @@ class TestAudioModerationResult:
 
     def test_all_fields_are_required(self):
         """Verify all fields are required"""
-        with pytest.raises(ValidationError, match="transcription|contains_pii|is_unfriendly|is_unprofessional"):
+        with pytest.raises(ValidationError, match="transcription|contains_pii|is_unfriendly|is_unprofessional|is_spam"):
             AudioModerationResult(rationale="Test", transcription="Test")

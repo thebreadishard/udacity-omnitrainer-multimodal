@@ -46,6 +46,7 @@ cases: List[Case[List[AudioInput], AudioModerationResult, Any]] = [
                 expected_pii=False,
                 expected_unfriendly=False,
                 expected_unprofessional=False,
+                expected_spam=False,
             ),
             LLMJudge(
                 model=judge_model,
@@ -63,6 +64,7 @@ cases: List[Case[List[AudioInput], AudioModerationResult, Any]] = [
                 expected_pii=True,
                 expected_unfriendly=False,
                 expected_unprofessional=False,
+                expected_spam=False,
             ),
             LLMJudge(
                 model=judge_model,

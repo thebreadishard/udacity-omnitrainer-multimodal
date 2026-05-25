@@ -87,6 +87,7 @@ cases: List[Case[List[TextInput], TextModerationResult, Any]] = [
                 expected_pii=False,
                 expected_unfriendly=False,
                 expected_unprofessional=False,
+                expected_spam=False,
             ),
             # Use judge model to evaluate if the rationale makes sense
             LLMJudge(
@@ -108,6 +109,7 @@ cases: List[Case[List[TextInput], TextModerationResult, Any]] = [
                 expected_pii=True,
                 expected_unfriendly=False,
                 expected_unprofessional=False,
+                expected_spam=False,
             ),
             LLMJudge(
                 model=judge_model,
@@ -125,10 +127,32 @@ cases: List[Case[List[TextInput], TextModerationResult, Any]] = [
                 expected_pii=False,
                 expected_unfriendly=True,
                 expected_unprofessional=True,
+                expected_spam=False,
             ),
             LLMJudge(
                 model=judge_model,
                 rubric="The rationale should explain why the tone is unfriendly and unprofessional, citing specific problematic phrases",
+                include_input=True,
+            ),
+        ),
+    ),
+    Case(
+        name="spam_text",
+        inputs=[TextInput(text_file=get_test_data_path("spam_text.txt"))],
+        metadata={"category": "text_moderation"},
+        evaluators=(
+            TextModerationCheck(
+                expected_pii=False,
+                expected_unfriendly=False,
+                expected_unprofessional=True,
+                expected_spam=True,
+            ),
+            LLMJudge(
+                model=judge_model,
+                rubric=(
+                    "The rationale should identify the message as spam or unsolicited promotional content, "
+                    "pointing at specific marketing language, suspicious offers, or boilerplate advertising."
+                ),
                 include_input=True,
             ),
         ),

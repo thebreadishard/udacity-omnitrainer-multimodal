@@ -18,10 +18,21 @@ You will receive a message from the customer representative towards the customer
 </input>
 
 <instructions>
-Detect if:
-- the tone of the message is unfriendly
-- the tone of the message is unprofessional
-- the message contains any personally-identifiable information (PII)
+Evaluate the message against the four flags below. Each flag is INDEPENDENT: a message may
+trigger any subset of them, and a single observation should not cause multiple flags unless it
+genuinely satisfies each flag's definition.
+
+- is_unfriendly: the tone is rude, hostile, dismissive, sarcastic, or cold toward the customer.
+  Neutral or matter-of-fact language is NOT unfriendly.
+- is_unprofessional: the message contains slang, profanity, casual filler, jokes, personal
+  opinions, off-topic chatter, or otherwise breaks the formal register expected of a customer
+  service representative. Sharing PII is covered by `contains_pii` and is NOT by itself
+  unprofessional; do not double-flag.
+- contains_pii: the message includes personally-identifiable information such as full names,
+  home/email addresses, phone numbers, dates of birth, social security or account numbers.
+- is_spam: unsolicited promotional content, repeated/boilerplate advertising, suspicious links
+  or offers, or off-topic mass-marketing language that does not belong in a legitimate customer
+  service exchange.
 </instructions>
 
 <output>
